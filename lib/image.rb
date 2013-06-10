@@ -1,7 +1,17 @@
 
 class Image
+attr_reader :height, :width
 
-  def initialize(m, n)
+COLOUR = ("A".."Z").to_a
 
-  end
+def initialize(m, n)
+  @width = m
+  @height = n
+end
+
+def colour_at_position(x, y)
+  
+end
+
+
 end
