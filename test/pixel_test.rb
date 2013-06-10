@@ -1,15 +1,14 @@
 require 'minitest'
 require 'minitest/spec'
 require 'minitest/autorun'
-require '../lib/image'
+require '../lib/pixel'
 
-describe Image do
+describe Pixel do
   before do
-    @image = Image.new(10,12)
+    @pixel = Pixel.new
   end
 
-  it "should do something" do
+  it "should..." do
     
   end
-
 end
