@@ -5,7 +5,7 @@ require '../lib/image'
 
 describe Image do
   before do
-    @screen = Image.new
+    @image = Image.new(10,12)
   end
 
   it "should do something" do
