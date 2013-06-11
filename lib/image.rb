@@ -13,11 +13,13 @@ end
 
 def draw_vertical_line(x,y1,y2,colour)
   raise ArgumentError, "y1 must be less than y2" if y1 > y2
+  raise ArgumentError, "co-ordinates must be within the bounds of the image" if x > @width || y2 > @height || x < 1 || y1 < 1
   (y1..y2).each { |y| set_colour(x,y,colour) }
 end
 
 def draw_horizontal_line(x1,x2,y,colour)
   raise ArgumentError, "x1 must be less than x2" if x1 > x2
+  raise ArgumentError, "co-ordinates must be within the bounds of the image" if x1 < 1 || x2 < 1 || x2 > @width || y < 1 || y > @height
   (x1..x2).each { |x| set_colour(x,y,colour) }
 end
 
@@ -61,11 +63,11 @@ def positions_adjacent_to(x,y)
 end
 
 def adjacent_colums(x)
-  (x-1..x+1)
+  (x-1..x+1).select{ |column| column > 0 && column <= width }
 end
 
 def adjacent_rows(y)
-  (y-1..y+1)
+  (y-1..y+1).select{ |row| row > 0 && row <= height }
 end
 
 end

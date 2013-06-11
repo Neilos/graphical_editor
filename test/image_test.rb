@@ -49,6 +49,19 @@ describe Image do
     @image.send(:get_colour, 5,7).wont_equal "C", "position [5,7] is wrong"
   end
 
+  it "should raise an error if the any of the position arguments are off the edge of the image" do
+    lambda{ @image.draw_vertical_line(0,6,3,"C") }.must_raise ArgumentError
+    lambda{ @image.draw_vertical_line(@width+1,6,3,"C") }.must_raise ArgumentError
+    lambda{ @image.draw_vertical_line(5,0,2,"C") }.must_raise ArgumentError
+    lambda{ @image.draw_vertical_line(5,6,0,"C") }.must_raise ArgumentError
+    lambda{ @image.draw_vertical_line(5,6,@height+1,"C") }.must_raise ArgumentError
+  end
+
+   it "should raise an error if the y1 & y2 arguments are in the wrong order" do
+    lambda{ @image.draw_vertical_line(5,6,3,"C") }.must_raise ArgumentError
+  end
+
+
   it "should draw a horizontal line of length 2" do
     @image.draw_horizontal_line(3,4,2,"Z")
     @image.send(:get_colour, 2,2).wont_equal "Z", "position [2,2] is wrong"
@@ -67,8 +80,12 @@ describe Image do
     @image.send(:get_colour, 6,6).wont_equal "W", "position [6,6] is wrong"
   end
 
-  it "should raise an error if the y1 & y2 arguments are in the wrong order" do
-    lambda{ @image.draw_vertical_line(5,6,3,"C") }.must_raise ArgumentError
+  it "should raise an error if the any of the position arguments are off the edge of the image" do
+    lambda{ @image.draw_horizontal_line(0,5,6,"W") }.must_raise ArgumentError
+    lambda{ @image.draw_horizontal_line(2,0,6,"W") }.must_raise ArgumentError
+    lambda{ @image.draw_horizontal_line(2,@width+1,6,"W") }.must_raise ArgumentError
+    lambda{ @image.draw_horizontal_line(2,5,0,"W") }.must_raise ArgumentError
+    lambda{ @image.draw_horizontal_line(2,5,@height+1,"W") }.must_raise ArgumentError
   end
 
   it "should raise an error if the x1 & x2 arguments are in the wrong order" do
@@ -89,6 +106,11 @@ describe Image do
     @image.send(:positions_adjacent_to, 3, 4).sort.must_equal correct_answer
   end
 
+  it "should not return adjacent positions outside the bounds of the image" do
+    correct_answer = [[9,11],[10,11],[9,12]].sort
+    @image.send(:positions_adjacent_to, 10, 12).sort.must_equal correct_answer
+  end
+
   it "can clear all the positions by setting all the positions to white (O)" do
     @image.draw_horizontal_line(2,5,6,"W")
     @image.draw_horizontal_line(3,4,2,"Z")
@@ -106,10 +128,18 @@ describe Image do
     @image.draw_horizontal_line(3,9,9,"Z")
     @image.draw_vertical_line(3,3,9,"Z")
     @image.draw_vertical_line(9,3,9,"Z")
-    puts
-    puts @image.show
     @image.fill(5,6,"A")
     filled_image_region_string = "O O O O O O O O O O\nO O O O O O O O O O\nO O Z Z Z Z Z Z Z O\nO O Z A A A A A Z O\nO O Z A A A A A Z O\nO O Z A A A A A Z O\nO O Z A A A A A Z O\nO O Z A A A A A Z O\nO O Z Z Z Z Z Z Z O\nO O O O O O O O O O\nO O O O O O O O O O\nO O O O O O O O O O\n"
+    @image.to_s.must_equal filled_image_region_string
+  end
+
+  it "should fill cells in a range when that range is on the edge of the image" do
+    @image.draw_horizontal_line(7,10,6,"Z")
+    @image.draw_vertical_line(7,7,12,"Z")
+    puts
+    puts @image.show
+    @image.fill(1,1,"A")
+    filled_image_region_string = "A A A A A A A A A A\nA A A A A A A A A A\nA A A A A A A A A A\nA A A A A A A A A A\nA A A A A A A A A A\nA A A A A A Z Z Z Z\nA A A A A A Z O O O\nA A A A A A Z O O O\nA A A A A A Z O O O\nA A A A A A Z O O O\nA A A A A A Z O O O\nA A A A A A Z O O O\n"
     @image.to_s.must_equal filled_image_region_string
     puts
     puts @image.show
