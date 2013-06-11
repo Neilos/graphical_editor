@@ -90,6 +90,7 @@ describe Image do
     @image.adjacent_positions(3,4).sort.must_equal correct_answer
   end
 
+
   it "can clear all the positions by setting all the positions to white (O)" do
     @image.draw_horizontal_line(2,5,6,"W")
     @image.draw_horizontal_line(3,4,2,"Z")
@@ -115,14 +116,19 @@ describe Image do
   # end
 # DELETE
   
-  # it "should fil cells in a range" do
-  #   @image.draw_horizontal_line(3,9,3,"Z")
-  #   @image.draw_horizontal_line(3,9,9,"Z")
-  #   @image.draw_vertical_line(3,3,9,"Z")
-  #   @image.draw_vertical_line(9,3,9,"Z")
-  #   puts
-  #   puts @image.show
-  # end
+  it "should fill cells in a range" do
+    @image.draw_horizontal_line(3,9,3,"Z")
+    @image.draw_horizontal_line(3,9,9,"Z")
+    @image.draw_vertical_line(3,3,9,"Z")
+    @image.draw_vertical_line(9,3,9,"Z")
+    puts
+    puts @image.show
+    @image.fill(5,6,"A")
+    filled_image_region_string = "O O O O O O O O O O\nO O O O O O O O O O\nO O Z Z Z Z Z Z Z O\nO O Z A A A A A Z O\nO O Z A A A A A Z O\nO O Z A A A A A Z O\nO O Z A A A A A Z O\nO O Z A A A A A Z O\nO O Z Z Z Z Z Z Z O\nO O O O O O O O O O\nO O O O O O O O O O\nO O O O O O O O O O\n"
+    @image.to_s.must_equal filled_image_region_string
+    puts
+    puts @image.show
+  end
 
 end
 

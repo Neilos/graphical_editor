@@ -59,6 +59,16 @@ def clear
   end
 end
 
+def fill(x, y, colour)
+  original_colour = colour_at_position(x,y)
+  recursive_fill(x, y, colour, original_colour)
+end
 
+def recursive_fill(x, y, colour, original_colour)
+  set_colour_at_position(x, y, colour)
+  adjacent_positions(x, y).each do |position|
+    recursive_fill(*position, colour, original_colour) if colour_at_position(*position) == original_colour
+  end
+end
 
 end
