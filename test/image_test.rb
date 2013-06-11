@@ -20,9 +20,9 @@ describe Image do
   end
 
   it "should be initialized with all positions having colour 'O'" do
-    (0..@width-1).map do |x|
-      (0..@height-1).map do |y|
-        @image.colour_at_position(x,y).must_equal "O"
+    (0..@height-1).map do |y|
+      (0..@width-1).map do |x|
+        @image.colour_at_position(x,y).must_equal "O", "position x=#{x},y=#{y}"
       end
     end
   end
@@ -76,9 +76,13 @@ describe Image do
     lambda{ @image.draw_horizontal_line(5,2,6,"W") }.must_raise ArgumentError
   end
 
+  it "has a string representation" do
+    image_string = (("O " * @width).rstrip + "\n") * @height
+    @image.to_s.must_equal image_string
+  end
+
   it "can show itself" do
-    image_string = (("O " * @height).rstrip + "\n") * @width
-    @image.show.must_equal image_string
+    @image.must_respond_to :show
   end
 
   it "should know the positions adjacent to a particular position" do
@@ -86,6 +90,39 @@ describe Image do
     @image.adjacent_positions(3,4).sort.must_equal correct_answer
   end
 
+  it "can clear all the positions by setting all the positions to white (O)" do
+    @image.draw_horizontal_line(2,5,6,"W")
+    @image.draw_horizontal_line(3,4,2,"Z")
+    @image.draw_vertical_line(5,3,6,"C")
+    @image.clear
+    (0..@height-1).each do |y|
+      (0..@width-1).each do |x|
+        @image.colour_at_position(x,y).must_equal "O"
+      end
+    end
+  end
+
+# DELETE
+  # it "can set the colour of an array of positions" do
+  #   positions_array = [[1,1],[10,1],[10,12],[1,12]]
+  #   colour_value = "A"
+  #   @image.set_colour_at_multiple_positions(colour_value, positions_array)
+  #   positions_array.each do |this_position|
+  #     @image.colour_at_position(*this_position).must_equal "A"
+  #   end
+  #   puts
+  #   puts @image.show
+  # end
+# DELETE
+  
+  # it "should fil cells in a range" do
+  #   @image.draw_horizontal_line(3,9,3,"Z")
+  #   @image.draw_horizontal_line(3,9,9,"Z")
+  #   @image.draw_vertical_line(3,3,9,"Z")
+  #   @image.draw_vertical_line(9,3,9,"Z")
+  #   puts
+  #   puts @image.show
+  # end
 
 end
 
