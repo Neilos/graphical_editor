@@ -19,13 +19,12 @@ describe Image do
   end
 
   it "should be initialized with all positions having colour 'O'" do
-    (0..@height-1).map do |y|
-      (0..@width-1).map do |x|
+    (1..@height).map do |y|
+      (1..@width).map do |x|
         @image.send(:get_colour, x,y).must_equal "O", "position x=#{x},y=#{y}"
       end
     end
   end
-
 
   it "can set the colour of a particular position" do
     @image.set_colour(10,12,"C")
