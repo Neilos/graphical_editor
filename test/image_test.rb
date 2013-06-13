@@ -147,7 +147,7 @@ describe Image do
     puts @image.show
   end
 
-  it "should raise a RuntimeError if called with an unregonized method" do
+  it "should raise a RuntimeError if called with an unrecognized method" do
     lambda{ @image.unknown_method }.must_raise RuntimeError
   end
 

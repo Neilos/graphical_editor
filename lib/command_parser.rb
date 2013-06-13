@@ -25,10 +25,10 @@ private
   def process_input(input)
     arguments = input.split(' ').map{|arg| (arg == "0" || arg.to_i != 0) ? arg.to_i : arg }
     command = arguments.shift.upcase.to_sym
-    execute_command(command, arguments)
+    execute(command, arguments)
   end
 
-  def execute_command(command, arguments)
+  def execute(command, arguments)
     return exit if command == :X
     return initialise_new_image(*arguments) if command == :I
     delegate_to_image(command, arguments)

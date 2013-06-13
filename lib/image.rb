@@ -2,22 +2,22 @@ class Image
   attr_reader :height, :width
 
   def initialize(width, height)
-    validate_initialization_parameters(width, height)
+    validate_dimensions width, height
     @height, @width, @pixels = height, width, (1..height).map{ (1..width).map{ "O" } }
   end
 
   def set_colour(x,y,colour)
-    validate_colour_and_confirm_positions_within_image([x],[y],colour)
+    validate_colour_and_positions([x],[y],colour)
     @pixels[y-1][x-1] = colour
   end
 
   def draw_vertical_line(x,y1,y2,colour)
-    validate_colour_and_confirm_positions_within_image([x],[y1,y2],colour)
+    validate_colour_and_positions([x],[y1,y2],colour)
     (y1..y2).each{ |y| set_colour(x,y,colour) }
   end
 
   def draw_horizontal_line(x1,x2,y,colour)
-    validate_colour_and_confirm_positions_within_image([x1,x2],[y],colour)
+    validate_colour_and_positions([x1,x2],[y],colour)
     (x1..x2).each{ |x| set_colour(x,y,colour) }
   end
 
@@ -31,10 +31,10 @@ class Image
     end
   end
 
-  def fill(x, y, colour)
-    validate_colour_and_confirm_positions_within_image([x],[y],colour)
-    original_colour = get_colour(x,y)
-    recursive_fill(x, y, colour, original_colour)
+  def fill(x, y, new_colour)
+    validate_colour_and_positions([x],[y],new_colour)
+    old_colour = get_colour(x,y)
+    recursive_fill(x, y, new_colour, old_colour)
   end
 
   def to_s
@@ -42,18 +42,6 @@ class Image
   end
 
 private
-
-  def validate_initialization_parameters(width, height)
-    raise ArgumentError, ERROR_MESSAGES[:invalid_dimensions] if width<1 || width>250 || height<1 || height>250
-  end
-
-  def validate_colour_and_confirm_positions_within_image(x_values, y_values, colour)
-    raise ArgumentError, "'#{colour}'" + ERROR_MESSAGES[:invalid_colour] unless colour =~ /[A-Z]/ && !colour.nil?
-    raise ArgumentError, ERROR_MESSAGES[:invalid_x_values] + "#{width}" if x_values.any? {|x| x<=0 || x>width}
-    raise ArgumentError, ERROR_MESSAGES[:invalid_y_values] + "#{@height}" if y_values.any? {|y| y<=0 || y>@height}
-    raise ArgumentError, ERROR_MESSAGES[:x_args_wrong_order] if x_values.first > x_values.last
-    raise ArgumentError, ERROR_MESSAGES[:y_args_wrong_order] if y_values.first > y_values.last
-  end
 
   def method_missing(method_name, *args, &block)
     raise RuntimeError, "Error! Command '#{method_name}'" + ERROR_MESSAGES[:unrecognized_command]
@@ -82,6 +70,18 @@ private
 
   def adjacent_colums(x)
     (x-1..x+1).select{ |column| column > 0 && column <= width }
+  end
+
+  def validate_dimensions(width, height)
+    raise ArgumentError, ERROR_MESSAGES[:invalid_dimensions] if width<1 || width>250 || height<1 || height>250
+  end
+
+  def validate_colour_and_positions(x_values, y_values, colour)
+    raise ArgumentError, "'#{colour}'" + ERROR_MESSAGES[:invalid_colour] unless colour =~ /[A-Z]/ && !colour.nil?
+    raise ArgumentError, ERROR_MESSAGES[:invalid_x_values] + "#{width}" if x_values.any? {|x| x<=0 || x>width}
+    raise ArgumentError, ERROR_MESSAGES[:invalid_y_values] + "#{@height}" if y_values.any? {|y| y<=0 || y>@height}
+    raise ArgumentError, ERROR_MESSAGES[:x_args_wrong_order] if x_values.first > x_values.last
+    raise ArgumentError, ERROR_MESSAGES[:y_args_wrong_order] if y_values.first > y_values.last
   end
 
   ERROR_MESSAGES = {
