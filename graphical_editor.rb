@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
-require './lib/command_line_parser'
+require './lib/command_parser'
 
-graphical_editor = CommandLineParser.new
+graphical_editor = CommandParser.new
 
 loop do
   graphical_editor.run
