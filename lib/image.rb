@@ -1,9 +1,9 @@
 class Image
   attr_reader :height, :width
 
-  def initialize(m, n)
-    raise ArgumentError, "Invalid dimensions! Image must be less than 250 x 250 pixels and must be at least 1 x 1 pixels." if m < 1 || m > 250 || n < 1 || n > 250
-    @height, @width, @pixels = n, m, (1..n).map{ (1..m).map{ "O" } }
+  def initialize(width, height)
+    raise ArgumentError, "Invalid dimensions! Image must be less than 250 x 250 pixels and must be at least 1 x 1 pixels." if width < 1 || width > 250 || height < 1 || height > 250
+    @height, @width, @pixels = height, width, (1..height).map{ (1..width).map{ "O" } }
   end
 
   def set_colour(x,y,colour)
