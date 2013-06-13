@@ -15,18 +15,17 @@ describe CommandParser do
   end
 
   it "should be able to initialise new images" do
-    @command_line_parser.send(:initialise_new_image, 10, 10).must_be_instance_of Image
-  end
-
-  it "should get input from the user" do
-    @command_line_parser.stubs(:gets).returns "A"
-    @command_line_parser.send(:get_user_input).must_equal "A"
+    @command_line_parser.stubs(:get_user_input).returns("I 10 10").at_least_once
+    @command_line_parser.run
+    @command_line_parser.send(:image).must_be_instance_of Image
   end
 
   it "should delegate commands to its current image when processing user input" do
-    mock_image = @command_line_parser.send(:initialise_new_image, 10, 12)
-    mock_image.expects(:L).with(5, 6, "C").at_least_once
-    @command_line_parser.send(:process_input, "L 5 6 C")
+    @command_line_parser.stubs(:get_user_input).returns("I 10 10").then.returns("L 5 6 C")
+    @command_line_parser.run
+    mock_image = @command_line_parser.send(:image)
+    mock_image.expects(:set_colour).with(5, 6, "C").at_least_once
+    @command_line_parser.run
   end
 
   it "should call the exit method when the user enters 'X'" do
