@@ -1,7 +1,9 @@
+require 'bundler/setup'
 require 'minitest'
 require 'minitest/spec'
 require 'minitest/autorun'
 require '../lib/image'
+require 'mocha/setup'
 
 describe Image do
   before do

@@ -1,7 +1,9 @@
+require 'bundler/setup'
 require 'minitest'
 require 'minitest/spec'
 require 'minitest/autorun'
 require '../lib/command_line_parser'
+require 'mocha/setup'
 
 describe CommandLineParser do
   before do
