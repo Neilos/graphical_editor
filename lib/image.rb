@@ -1,8 +1,15 @@
 class Image
   attr_reader :height, :width
 
+  ERROR_MESSAGES = {
+    :initialization   => "Invalid dimensions! Image must be less than 250 x 250 pixels and must be at least 1 x 1 pixels.",
+    :invalid_colour   => " is not a valid colour. Must be a capital letter.",
+    :invalid_x_values => "Error! X-value(s) must be greater than 0 and less than image width: ",
+    :invalid_y_values => "Error! Y-value(s) must be greater than 0 and less than image height: ",
+    :unrecognized_command => " not recognized.\nPlease enter one of the following:\nI (to initialize a new image)\nC (to clear the current image)\nL (to colour a particular pixel)\nV (to draw a vertical line)\nH (to draw a horizontal line)\nF (to fill a region)\nS (to show the image)\nX (to exit)" }
+
   def initialize(width, height)
-    raise ArgumentError, "Invalid dimensions! Image must be less than 250 x 250 pixels and must be at least 1 x 1 pixels." if width < 1 || width > 250 || height < 1 || height > 250
+    raise(ArgumentError, ERROR_MESSAGES[:initialization]) if width < 1 || width > 250 || height < 1 || height > 250
     @height, @width, @pixels = height, width, (1..height).map{ (1..width).map{ "O" } }
   end
 
@@ -10,66 +17,59 @@ class Image
     validate_colour_and_confirm_positions_within_image([x],[y],colour)
     @pixels[y-1][x-1] = colour
   end
-  alias_method :L, :set_colour
 
   def draw_vertical_line(x,y1,y2,colour)
     raise ArgumentError, "Y1 must be less than Y2" if y1 > y2
     validate_colour_and_confirm_positions_within_image([x],[y1,y2],colour)
     (y1..y2).each{ |y| set_colour(x,y,colour) }
   end
-  alias_method :V, :draw_vertical_line
 
   def draw_horizontal_line(x1,x2,y,colour)
     raise ArgumentError, "X1 must be less than X2" if x1 > x2
     validate_colour_and_confirm_positions_within_image([x1,x2],[y],colour)
     (x1..x2).each{ |x| set_colour(x,y,colour) }
   end
-  alias_method :H, :draw_horizontal_line
 
   def to_s
-    @pixels.map{ |row| row.join(' ') + "\n" }.join
+    @pixels.map{|row| row.join(' ') + "\n" }.join
   end
 
   def show
     print self
   end
-  alias_method :S, :show
 
   def clear
     (1..@height).each do |y|
       (1..@width).each{ |x| set_colour(x, y, "O") }
     end
   end
-  alias_method :C, :clear
 
   def fill(x, y, colour)
     validate_colour_and_confirm_positions_within_image([x],[y],colour)
     original_colour = get_colour(x,y)
     recursive_fill(x, y, colour, original_colour)
   end
-  alias_method :F, :fill
 
-
-  private
+private
 
   def validate_colour_and_confirm_positions_within_image(x_values, y_values, colour)
-    raise ArgumentError, "'#{colour}' is not a valid colour. Colours must be specified with a capital letter." unless colour =~ /[A-Z]/
-    raise ArgumentError, "Error! Ensure X-value(s) is greater than zero and less than the image height: #{@width}" unless x_values.all? {|x| x > 0 && x <= @width}
-    raise ArgumentError, "Error! Ensure Y-value(s) is greater than zero and less than the image height: #{@height}" unless y_values.all? {|y| y > 0 && y <= @height}
+    raise ArgumentError, "'#{colour}'" + ERROR_MESSAGES[:invalid_colour] unless colour =~ /[A-Z]/
+    raise ArgumentError, ERROR_MESSAGES[:invalid_x_values] + "#{width}" if x_values.any? {|x| x<=0 || x>width}
+    raise ArgumentError, ERROR_MESSAGES[:invalid_y_values] + "#{@height}" if y_values.any? {|y| y<=0 || y>@height}
   end
 
   def method_missing(method_name, *args, &block)
-    raise RuntimeError, "Command '#{method_name}' not recognized.\n Please enter one of the following:\n I (to initialize a new image)\n C (to clear the current image)\n L (to colour a particular pixel)\n V (to draw a vertical line)\n H (to draw a horizontal line)\n F (to fill a region)\n S (to show the image)\n X (to exit)"
+    raise RuntimeError, "Command '#{method_name}'" + ERROR_MESSAGES[:unrecognized_command]
   end
 
   def get_colour(x, y)
     @pixels[y-1][x-1]
   end
 
-  def recursive_fill(x, y, colour, original_colour)
-    set_colour(x, y, colour)
+  def recursive_fill(x, y, new_colour, old_colour)
+    set_colour(x, y, new_colour)
     positions_adjacent_to(x, y).each do |p|
-      recursive_fill(*p, colour, original_colour) if get_colour(*p) == original_colour
+      recursive_fill(*p, new_colour, old_colour) if get_colour(*p) == old_colour
     end
   end
 
@@ -86,5 +86,4 @@ class Image
   def adjacent_colums(x)
     (x-1..x+1).select{ |column| column > 0 && column <= width }
   end
-
 end

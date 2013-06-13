@@ -147,13 +147,8 @@ describe Image do
     puts @image.show
   end
 
-  it "should respond to alias methods" do
-    @image.must_respond_to :C
-    @image.must_respond_to :L
-    @image.must_respond_to :V
-    @image.must_respond_to :H
-    @image.must_respond_to :F
-    @image.must_respond_to :S
+  it "should raise a RuntimeError if called with an unregonized method" do
+    lambda{ @image.unknown_method }.must_raise RuntimeError
   end
 
 end

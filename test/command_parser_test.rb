@@ -33,9 +33,8 @@ describe CommandParser do
     @command_line_parser.send(:process_input, 'X')
   end
 
-  it "should handle all appropriate errors when being run" do
-    @command_line_parser.stubs(:get_user_input).raises(StandardError).then.raises(RuntimeError).then.raises(ArgumentError).then.raises(NoMethodError)
-    @command_line_parser.run
+  it "should handle all appropriate image errors when being run" do
+    @command_line_parser.stubs(:get_user_input).raises(RuntimeError).then.raises(ArgumentError).then.raises(NoMethodError)
     @command_line_parser.run
     @command_line_parser.run
     @command_line_parser.run
