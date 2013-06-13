@@ -2,7 +2,6 @@
 
 This repo contains a coding response to a test set in 2013 by Evgeny Shadchnev at Makers Academy in London. The code contained in this repository was produced by Neil Atkinson and Liz Candler as part of a paired programming exercise at Makers Academy.
 
-As well as producing a working program, the goal of the test was to produce 'beatiful' code.
 
 ##Test Details
 
